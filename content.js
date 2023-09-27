@@ -1,7 +1,7 @@
 window.onload = function () {
     const histories = getHistory();
-    const duration = calcDuration(histories);
-    setDuration(formatDuration(duration));
+    const workingHours = calcWorkingHours(histories);
+    setWorkingHours(formatWorkingHours(workingHours));
 };
 
 function History(type, time) {
@@ -32,7 +32,7 @@ function getHistory() {
     return histories;
 }
 
-function calcDuration(histories) {
+function calcWorkingHours(histories) {
     if (histories.length == 0) {
         return 0;
     }
@@ -41,7 +41,7 @@ function calcDuration(histories) {
     const lastHistory = histories[histories.length - 1];
     const workEnd = lastHistory.type === "退勤" ? lastHistory.time : new Date();
 
-    let duration = workEnd - workStart;
+    let workingHours = workEnd - workStart;
     let breakStart = null;
     let breakEnd = null;
 
@@ -50,31 +50,31 @@ function calcDuration(histories) {
             breakStart = history.time;
         } else if (history.type === "休憩終了") {
             breakEnd = history.time;
-            duration -= (breakEnd - breakStart);
+            workingHours -= (breakEnd - breakStart);
             breakStart = null;
             breakEnd = null;
         }
     }
 
-    return Math.floor(duration / 60000);
+    return Math.floor(workingHours / 60000);
 }
 
-function formatDuration(duration) {
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
+function formatWorkingHours(workingHours) {
+    const hours = Math.floor(workingHours / 60);
+    const minutes = workingHours % 60;
     return "勤務時間：" + hours + "時間" + minutes + "分";
 }
 
-function setDuration(text) {
+function setWorkingHours(text) {
     var statusContainer = document.getElementsByClassName("status-container")[0];
 
-    var durationContainer = document.createElement("div");
-    durationContainer.className = "duration-container";
-    statusContainer.appendChild(durationContainer);
+    var workingHoursContainer = document.createElement("div");
+    workingHoursContainer.className = "working-hours-container";
+    statusContainer.appendChild(workingHoursContainer);
 
-    var duration = document.createElement("span");
-    duration.className = "duration";
-    durationContainer.appendChild(duration);
+    var workingHours = document.createElement("span");
+    workingHours.className = "workingHours";
+    workingHoursContainer.appendChild(workingHours);
 
-    duration.innerHTML = text;
+    workingHours.innerHTML = text;
 }

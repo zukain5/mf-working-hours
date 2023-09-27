@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "MF Working Hours",
-    "description": "Work Time Indicator for Money Forward",
+    "description": "Work Hours Indicator for Money Forward Attendance",
     "version": "1.0",
     "content_scripts": [
         {
