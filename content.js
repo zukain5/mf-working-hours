@@ -1,7 +1,7 @@
 window.onload = function () {
     const histories = getHistory();
-    const workingHours = calcWorkingHours(histories);
-    setWorkingHours(formatWorkingHours(workingHours));
+    const workingMinutes = calcWorkingMinutes(histories);
+    setWorkingHours(formatWorkingMinutes(workingMinutes));
 };
 
 function History(type, time) {
@@ -34,7 +34,7 @@ function getHistory() {
     return histories;
 }
 
-function calcWorkingHours(histories) {
+function calcWorkingMinutes(histories) {
     if (histories.length == 0) {
         return 0;
     }
@@ -43,7 +43,7 @@ function calcWorkingHours(histories) {
     const lastHistory = histories[histories.length - 1];
     const workEnd = lastHistory.type === "退勤" ? lastHistory.time : new Date();
 
-    let workingHours = workEnd - workStart;
+    let workingMilliSeconds = workEnd - workStart;
     let breakStart = null;
     let breakEnd = null;
 
@@ -52,18 +52,18 @@ function calcWorkingHours(histories) {
             breakStart = history.time;
         } else if (history.type === "休憩終了") {
             breakEnd = history.time;
-            workingHours -= (breakEnd - breakStart);
+            workingMilliSeconds -= (breakEnd - breakStart);
             breakStart = null;
             breakEnd = null;
         }
     }
 
-    return Math.floor(workingHours / 60000);
+    return Math.floor(workingMilliSeconds / 60000);
 }
 
-function formatWorkingHours(workingHours) {
-    const hours = Math.floor(workingHours / 60);
-    const minutes = workingHours % 60;
+function formatWorkingMinutes(workingMinutes) {
+    const hours = Math.floor(workingMinutes / 60);
+    const minutes = workingMinutes % 60;
     return "勤務時間：" + hours + "時間" + minutes + "分";
 }
 
