@@ -14,9 +14,11 @@ function getHistory() {
     const historyItems = historyList.getElementsByClassName("history-item");
 
     const descHistories = Array.from(historyItems).map(function (historyItem) {
-        const textContent = historyItem.textContent.trim().split('\n').map(item => item.trim());
-        const type = textContent[0];
-        const timeString = textContent[1];
+        // 「退勤12:34」のような文字列を「退勤」と「12:34」に分割する
+        const textContent = historyItem.textContent;
+        const splitIndex = textContent.search(/\d/);
+        const type = textContent.slice(0, splitIndex);
+        const timeString = textContent.slice(splitIndex);
 
         const timeParts = timeString.split(':');
         const date = new Date();
