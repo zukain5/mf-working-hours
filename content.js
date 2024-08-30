@@ -1,7 +1,8 @@
 window.onload = function () {
     const histories = getHistory();
     const workingMinutes = calcWorkingMinutes(histories);
-    setWorkingHours(formatWorkingMinutes(workingMinutes));
+    const autoAddedBreak = calcAutoAddedBreak(workingMinutes);
+    setWorkingHours(formatMinutes(workingMinutes - autoAddedBreak), formatMinutes(autoAddedBreak));
 };
 
 function History(type, time) {
@@ -61,13 +62,21 @@ function calcWorkingMinutes(histories) {
     return Math.floor(workingMilliSeconds / 60000);
 }
 
-function formatWorkingMinutes(workingMinutes) {
-    const hours = Math.floor(workingMinutes / 60);
-    const minutes = workingMinutes % 60;
-    return "勤務時間：" + hours + "時間" + minutes + "分";
+function calcAutoAddedBreak(workingMinutes) {
+    if (workingMinutes >= 480) {
+        return 60;
+    } else if (workingMinutes >= 360) {
+        return 45;
+    } else {
+        return 0;
+    }
 }
 
-function setWorkingHours(text) {
+function formatMinutes(minutes) {
+    return Math.floor(minutes / 60) + "時間" + (minutes % 60) + "分";
+}
+
+function setWorkingHours(workingHoursText, autoAddedBreakText) {
     var statusContainer = document.getElementsByClassName("status-container")[0];
 
     var workingHoursContainer = document.createElement("div");
@@ -78,5 +87,5 @@ function setWorkingHours(text) {
     workingHours.className = "workingHours";
     workingHoursContainer.appendChild(workingHours);
 
-    workingHours.innerHTML = text;
+    workingHours.innerHTML = `勤務時間：${workingHoursText}（自動追加休憩時間：${autoAddedBreakText}）`;
 }
